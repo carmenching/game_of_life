@@ -34,33 +34,33 @@ def borderBottomLeft(x, y, grid):
 
 def borderBottom(x, y, grid):
     liveNeighbours = 0
-    if grid[x-1][y+1]:
+    if grid[x][y-1]:
+        liveNeighbours += 1
+    if grid[x-1][y-1]:
+        liveNeighbours += 1
+    if grid[x-1][y]:
         liveNeighbours += 1
     if grid[x-1][y+1]:
         liveNeighbours += 1
     if grid[x][y+1]:
-        liveNeighbours += 1
-    if grid[x+1][y+1]:
-        liveNeighbours += 1
-    if grid[x+1][y]:
         liveNeighbours += 1
     return liveNeighbours
 
 def borderBottomRight(x, y, grid):
     liveNeighbours = 0
-    if grid[x-1][y+1]:
-        liveNeighbours += 1
-    if grid[x][y+1]:
-        liveNeighbours += 1
     if grid[x-1][y]:
+        liveNeighbours += 1
+    if grid[x][y-1]:
+        liveNeighbours += 1
+    if grid[x-1][y-1]:
         liveNeighbours += 1
     return liveNeighbours
 
 def borderRight(x, y, grid):
     liveNeighbours = 0
-    if grid[x-1][y+1]:
+    if grid[x+1][y]:
         liveNeighbours += 1
-    if grid[x][y+1]:
+    if grid[x+1][y-1]:
         liveNeighbours += 1
     if grid[x][y-1]: 
         liveNeighbours += 1
@@ -114,8 +114,6 @@ def noBorder(x,y,grid):
         liveNeighbours += 1
     return liveNeighbours
 
-
-
 def verifyNeighbour(x,y, grid):
     liveNeighbours = 0
     gridRow = len(grid)
@@ -127,11 +125,11 @@ def verifyNeighbour(x,y, grid):
         liveNeighbours = borderTop(x, y, grid)
     elif x==0 and y==gridColumn-1:
         liveNeighbours = borderTopRight(x, y, grid)
-    elif y==gridColumn-1:
+    elif y==gridColumn-1 and x!= gridRow-1:
         liveNeighbours = borderRight(x, y, grid)
     elif x==gridRow-1 and y==gridColumn-1:
         liveNeighbours = borderBottomRight(x, y, grid)
-    elif x==gridRow-1:
+    elif x==gridRow-1 and y!=gridColumn-1:
         liveNeighbours = borderBottom(x, y, grid)
     elif x==gridRow-1 and y==0:
         liveNeighbours = borderBottomLeft(x, y, grid)
@@ -140,18 +138,21 @@ def verifyNeighbour(x,y, grid):
     else :
         liveNeighbours = noBorder(x, y, grid)
     
-    if liveNeighbours > 3 or liveNeighbours < 2:
-        return False
-    else :
+    if liveNeighbours == 2 or liveNeighbours == 3 :
         return True
+    else :
+        return False
 
-def nextCycle(grid):
-    for i in range (len(grid)):
-        for j in range (len(grid[i])):
-            isAlive = verifyNeighbour(i, j, grid)
+def nextCycle(currentState):
+    nextState = [[False for x in range(len(currentState))] for y in range(len(currentState[0]))]
+    for i in range (len(currentState)):
+        for j in range (len(currentState[i])):
+            # print("("+str(i) + ","+str(j)+"):")
+            isAlive = verifyNeighbour(i, j, currentState)
+            # print(isAlive)
             if isAlive:
-                grid[i][j] = True
-    return grid
+                nextState[i][j] = True
+    return nextState
 
 def staticData():
     coordinates = [(1,2),(3,5),(3,3),(3,4)]
@@ -159,9 +160,9 @@ def staticData():
 
 def imprimeGrid(grid):
     for i in range (len(grid)):
-        # row = ''
         for j in range (len(grid[i])):
             if grid[i][j] :
+                # print("from imprimeGrid : "+str(grid[i][j]))
                 grid[i][j] = 'X|'
             else : 
                 grid[i][j] = '_|'
@@ -188,16 +189,20 @@ def insertGridWithBlocks(grid):
     return grid
 
 def main():
-    grid = createGrid(6,6)
-    grid = insertGridWithBlocks(grid)
+    currentState = createGrid(6,6)
+    currentState = insertGridWithBlocks(currentState)
     print("T1:")
-    imprimeGrid(grid)
-    print("T2")
-    nextCycle(grid)
-    imprimeGrid(grid)
+    imprimeGrid(currentState)
+    print("begin cycles")
+    cycles = 20
+    for i in range(cycles) : 
+        nextState = nextCycle(currentState)
+        imprimeGrid(nextState)
+        currentState = nextState
+        print("----------------------")
 
-    # imprimeGrid(grid)
-    # createGrid()
+    
+
 #cet embranchement conditionnel 
 #permet de vérifier si le programme a été lancé en execution ou par importation 
 if __name__ == '__main__':
