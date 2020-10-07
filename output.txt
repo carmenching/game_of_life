@@ -1,6 +1,1 @@
-False|
-False|
-False|
-True|
-False|
-False|
+Inserer le nombre de ligne du graphe: 

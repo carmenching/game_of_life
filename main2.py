@@ -1,6 +1,6 @@
 import random
 
-coords = [(int(random.random()*50), int(random.random()*50)) for _ in range(150)]
+coords = [(int(random.random()*50), int(random.random()*100)) for x in range(450)]
 print(coords)
 
 # grille = [['x' for y in range(100)] for x in range(150)]
