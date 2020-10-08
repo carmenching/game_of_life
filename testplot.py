@@ -2,14 +2,10 @@
 import os
 import time
 import random
+import matplotlib.pyplot as plt
+import numpy as np
 
-
-def imprimerCellule(cellule):
-    if cellule : 
-        return '•'
-    return ' '
 #-----------------Grille-----------------#
-
 # Créer la grille
 def creerGrille(ligne, colonne, wrap, celluleInitiale):
     cellule = False
@@ -30,14 +26,7 @@ def creerGrille(ligne, colonne, wrap, celluleInitiale):
         grille[j[0]][j[1]] = True
     return grille
 
-def imprimerGrille(grille):
-    for ligne in grille :
-        for colonne in ligne :
-            print(imprimerCellule(colonne), end='')
-        print()
-
 #-------------------------------------------------#
-
 def prochaineGeneration(grille):
     for ligne in range(len(grille)):
         for colonne in range(len(grille[ligne])):
@@ -81,39 +70,49 @@ def main():
     colonne = int(input("Inserer le nombre de colonne du graphe: "))
     total = ligne*colonne
     frequency = int(input("nombre de génération souhaité : "))
+    
     estWrap = False
     wrap = (input("Est-ce que le graphe sera wrappé? '0' pour non et '1' pour oui: "))
     if wrap == '1':
         estWrap = True
     nbrCellule = genererNombreCellule(total)
+    
     celluleInitiale = [(int(random.random()*ligne), int(random.random()*colonne)) for x in range(nbrCellule)]
     grilleInitiale = creerGrille(ligne, colonne, estWrap, celluleInitiale)
-    os.system('cls')
-    imprimerGrille(grilleInitiale)
-    time.sleep(3)
-    os.system('cls')
+    
+    plt.ion()
+    fig, ax = plt.subplots()
+    y = []
+    x = []
+    for i in range(len(grilleInitiale)) :
+        for j in range(len(grilleInitiale[i])) :
+            stateCellule = grilleInitiale[i][j]
+            if stateCellule :
+                y.append(i)
+                x.append(j)
+    print("y:" + str(y))
+    print("x:" + str(x))
+    sc = ax.scatter(x,y)
+    plt.xlim(0,colonne)
+    plt.ylim(0,ligne)
+
+    plt.draw()
     for i in range(frequency):
         nextGrille = prochaineGeneration(grilleInitiale)
-        imprimerGrille(nextGrille)
-        time.sleep(3)
-        os.system('cls')
+        y = []
+        x = []
+        for i in range(len(grilleInitiale)) :
+            for j in range(len(grilleInitiale[i])) :
+                stateCellule = grilleInitiale[i][j]
+                if stateCellule :
+                    y.append(i)
+                    x.append(j)
+
+        sc.set_offsets(np.c_[x,y])
+        fig.canvas.draw_idle()
+        plt.pause(1.0)
         grilleInitiale = nextGrille
-
-    print("End")
-
+    plt.waitforbuttonpress()
+    
 if __name__ == '__main__':
     main()
-
-#-----------------Cellule-----------------#
-# def tuerCellule(cellule) :
-#     cellule = False
-#     return cellule
-
-# def revivreCellule(cellule) : 
-#     cellule = True
-#     return cellule
-
-# def estVivant(cellule) :
-#     if cellule:
-#         return True
-#     else : return False

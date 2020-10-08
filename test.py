@@ -5,7 +5,6 @@ import os
 import matplotlib
 import matplotlib.pyplot as plt
 
-
 def creerGrille(ligne, colonne):
     y = []
     x = []
@@ -13,9 +12,6 @@ def creerGrille(ligne, colonne):
         for j in colonne:
             y.append(i)
             x.append(j)
-
-    
-
 
 def printGraph():
     a = [1, 2, 3, 4, 2]
